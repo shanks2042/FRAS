@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FaceLog - Attendance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1>FaceLog</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/admin">Admin</a>
+                {% if session.get('admin_logged_in') %}
+                <a href="/logout">Logout</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card attendance-card">
+            <h2>Today's Attendance 📋</h2>
+            <form action="/start" method="get">
+                <button class="btn">Take Attendance</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S No</th>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(l) %}
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ names[i] }}</td>
+                        <td>{{ rolls[i] }}</td>
+                        <td>{{ times[i] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card add-user-card">
+            <h2>Add New User 👤</h2>
+            <form action="/add" method="post">
+                <label>Enter New User Name*</label>
+                <input type="text" name="newusername" required>
+                <label>Enter New User Id*</label>
+                <input type="text" name="newuserid" required>
+                <button class="btn" type="submit">Add New User</button>
+            </form>
+            <p class="total-users">Total Users in Database: {{ totalreg }}</p>
+        </section>
+    </main>
+</body>
+</html>
