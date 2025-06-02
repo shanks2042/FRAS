@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Attendance</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
+    input[type=file], button {
+      font-size: 18px; padding: 10px; margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload Your Face to Mark Attendance</h2>
+  <p>Date: {{ datetoday }}</p>
+  <form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" capture="environment" required><br>
+    <button type="submit">Upload & Mark Attendance</button>
+  </form>
+</body>
+</html>

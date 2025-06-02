@@ -205,5 +205,42 @@ def delete_user():
     return redirect(url_for('admin_dashboard'))
 
 
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files.get('image')
+    if not file:
+        return "No file uploaded", 400
+
+    npimg = np.frombuffer(file.read(), np.uint8)
+    img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+    face = detect_face(img)
+    if face is not None:
+        name = recognize_face(face)
+        if name:
+            add_attendance(name)
+            return f"✅ Attendance marked for {name}"
+        else:
+            return "❌ Face not recognized"
+    else:
+        return "❌ No face detected"
+
+def detect_face(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    if len(faces) == 0:
+        return None
+    x, y, w, h = faces[0]
+    face = gray[y:y+h, x:x+w]
+    face = cv2.resize(face, (50, 50)).flatten().reshape(1, -1)
+    return face
+
+def recognize_face(face):
+    model = joblib.load('static/face_recognition_model.pkl')
+    pred = model.predict(face)
+    return pred[0] if pred else None
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=1000)
